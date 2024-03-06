@@ -2,6 +2,7 @@ package com.food.cravings.controller;
 
 import com.food.cravings.config.JwtProvider;
 import com.food.cravings.model.Cart;
+import com.food.cravings.model.USER_ROLE;
 import com.food.cravings.model.User;
 import com.food.cravings.repository.CartRepository;
 import com.food.cravings.repository.UserRepository;
@@ -15,10 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/auth")
@@ -69,15 +73,21 @@ public class AuthController {
     }
 
 
-    @PostMapping("/login")
+    @PostMapping("/signin")
     public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest request){
 
         String username = request.getEmail();
         String password = request.getPassword();
         Authentication authentication = authenticate(username, password);
+        String jwt  = jwtProvider.generateToken(authentication);
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setJwt(jwt);
+        authResponse.setMessage("Login Successful");
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        String roles = authorities.isEmpty() ? null: authorities.iterator().next().getAuthority();
+        authResponse.setRole(USER_ROLE.valueOf(roles));
 
-
-        return null;
+        return new ResponseEntity<>(authResponse, HttpStatus.OK);
     }
 
     private Authentication authenticate(String username, String password) {
@@ -90,8 +100,6 @@ public class AuthController {
         if(!passwordEncoder.matches(password, userDetails.getPassword())){
             throw new BadCredentialsException("Invalid Password");
         }
-
-
         return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 
     }

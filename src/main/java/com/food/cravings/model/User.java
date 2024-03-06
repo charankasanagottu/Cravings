@@ -1,7 +1,8 @@
 package com.food.cravings.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.food.cravings.dto.ResturantDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.food.cravings.dto.RestaurantDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +23,10 @@ public class User {
 
     private String fullName;
     private String email;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
     private USER_ROLE role =USER_ROLE.ROLE_CUSTOMER;
 
     @JsonIgnore
@@ -30,7 +34,7 @@ public class User {
     private List<Order> orders = new ArrayList<>();
 
     @ElementCollection
-    private List<ResturantDto> favorites = new ArrayList<>();
+    private List<RestaurantDto> favorites = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
