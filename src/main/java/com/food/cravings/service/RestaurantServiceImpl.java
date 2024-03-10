@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,13 +103,23 @@ public class RestaurantServiceImpl implements RestaurantService{
         restaurantDto.setImages(restaurant.getImages());
         restaurantDto.setTitle(restaurant.getName());
         restaurantDto.setId(restaurantId);
-        if(user.getFavorites().contains(restaurantDto)){
-            user.getFavorites().remove(restaurantDto);
-        }
-        else{
-            user.getFavorites().add(restaurantDto);
+
+        boolean isFavorited = false;
+        List<RestaurantDto> favorites = user.getFavorites();
+        for(RestaurantDto favorite: favorites) {
+            if(favorite.getId().equals(restaurantId)){
+                isFavorited = true;
+                break;
+            }
         }
 
+        if(isFavorited){
+            favorites.removeIf(favorite -> favorite.getId().equals(restaurantId));
+        }
+        else
+        {
+            favorites.add(restaurantDto);
+        }
         userRepository.save(user);
 
         return restaurantDto;
@@ -117,7 +128,15 @@ public class RestaurantServiceImpl implements RestaurantService{
     @Override
     public Restaurant updateRestaurantStatus(Long restaurantId) throws Exception {
         Restaurant restaurant = findRestaurantById(restaurantId);
-        restaurant.setOpen(!restaurant.getOpen());
+        if(restaurant.getOpen() == null){
+            restaurant.setOpen(true);
+        }
+        else if(restaurant.getOpen() == true){
+            restaurant.setOpen(false);
+        }
+        else{
+            restaurant.setOpen(true);
+        }
 
         return restaurantRepository.save(restaurant);
     }

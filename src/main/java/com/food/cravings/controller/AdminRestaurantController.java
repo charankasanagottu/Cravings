@@ -20,7 +20,6 @@ public class AdminRestaurantController {
     @Autowired
     private UserService userService;
 
-    @PostMapping()
     public ResponseEntity<Restaurant> CreateRestaurant(
             @RequestBody CreateRestaurantRequest request,
             @RequestHeader("Authorization") String jwtToken
@@ -43,7 +42,6 @@ public class AdminRestaurantController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponse> deleteRestaurant(
-            @RequestBody CreateRestaurantRequest request,
             @RequestHeader("Authorization") String jwtToken,
             @PathVariable Long id
     ) throws Exception {
@@ -57,7 +55,6 @@ public class AdminRestaurantController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<Restaurant> updateRestaurantStatus(
-            @RequestBody CreateRestaurantRequest request,
             @RequestHeader("Authorization") String jwtToken,
             @PathVariable Long id
     ) throws Exception {
@@ -69,7 +66,6 @@ public class AdminRestaurantController {
 
     @GetMapping("/user")
     public ResponseEntity<Restaurant> findRestaurantByUserId(
-            @RequestBody CreateRestaurantRequest request,
             @RequestHeader("Authorization") String jwtToken
     ) throws Exception {
         User user = userService.findUserByJwtToken(jwtToken);

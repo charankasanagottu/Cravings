@@ -11,7 +11,6 @@ import com.food.cravings.response.AuthResponse;
 import com.food.cravings.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,7 +41,6 @@ public class AuthController {
     @Autowired
     private CartRepository cartRepository;
 
-    @PostMapping("/signup")
     public ResponseEntity<AuthResponse> createUserHandler(@RequestBody User user) throws Exception {
         User isEmailExists = userRepository.findByEmail(user.getEmail());
         if(isEmailExists != null){
@@ -73,7 +71,6 @@ public class AuthController {
     }
 
 
-    @PostMapping("/signin")
     public ResponseEntity<AuthResponse> signin(@RequestBody LoginRequest request){
 
         String username = request.getEmail();
