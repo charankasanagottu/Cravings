@@ -37,10 +37,10 @@ public class Order {
     private Address deliveryAddress;
 
     @OneToMany
-    private List<Orderitem> items;
+    private List<OrderItem> items;
 
     private int totalItem;
-    private int totalPrice;
+    private Long totalPrice;
 
 //    private Payment payment ;
 }
